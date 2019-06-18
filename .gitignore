@@ -113,10 +113,10 @@ venv.bak/
 .aws/
 
 # circle ci
-.circleci
+.circleci/
 
 # git
-.git
+.git/
 
 # DS_Store
-.DS_Store
+.DS_Store/
