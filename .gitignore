@@ -108,3 +108,15 @@ venv.bak/
 *.tfstate
 *.tfvars
 *.tfstate.backup
+
+# aws
+.aws/
+
+# circle ci
+.circleci/
+
+# git
+.git/
+
+# DS_Store
+.DS_Store
