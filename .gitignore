@@ -112,9 +112,6 @@ venv.bak/
 # aws
 .aws/
 
-# circle ci
-.circleci/
-
 # git
 .git/
 
