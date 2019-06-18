@@ -111,9 +111,3 @@ venv.bak/
 
 # aws
 .aws/
-
-# git
-.git/
-
-# DS_Store
-.DS_Store
