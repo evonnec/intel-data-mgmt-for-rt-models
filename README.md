@@ -14,8 +14,7 @@ First, an event trigger or computation trigger is activated in our scheduler,
 Airflow. An Airflow DAG is initiated.
 
 This Airflow DAG runs first task 1 which sends instructions for a python script to run.
-This python script recomputes betas of models with the new dataset, saves these outputs
-to a versioned table.
+This python script recomputes betas of models with the new dataset, saves these outputs to a versioned table.
 
 The Airflow DAG then runs task 2, Circle CI unit tests the newly versioned dataset
 and model output to make sure there are no issues.
