@@ -5,40 +5,58 @@ echo "Hey there! This script will set up your airflow"
 echo ""
 echo ""
 
-sudo apt install virtualenv
-mkdir airflow
-export AIRFLOW_HOME=`pwd`/airflow
-cd airflow
-
-sudo usermod -aG sudo ubuntu
-source venv/bin/activate
-pip install apache-airflow[all]
-exit
-source venv/bin/activate
-
 sudo apt install python3-pip
 sudo apt install python-pip
 
-sudo usermod -aG sudo ubuntu
+sudo apt install virtualenv
 
+#setting up virtualenv
+mkdir airflow
+export HOME=`pwd`
+export AIRFLOW_HOME=`pwd`/airflow
+cd $AIRFLOW_HOME
+virtualenv -p `which python3` venv
+source venv/bin/activate
+
+#alternative to setting up virtual env
+#$mkdir env
+#$cd env
+#$virtualenv airflow
+#$cd $HOME
+#$source ~/env/airflow/bin/activate
+
+deactivate
+cd $HOME
+
+sudo usermod -aG sudo ubuntu
 pip install apache-airflow[all]
 
-#do this if you haven't set up a postgres table yet
-echo "CREATE USER <user> PASSWORD '<db_pwd>'; CREATE DATABASE <db name>; GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO <user>;" | sudo -u postgres psql
-sudo -u postgres sed -i "s|#listen_addresses = 'localhost'|listen_addresses = '*'|" /etc/postgresql/10/main/postgresql.conf
-sudo -u postgres sed -i "s|127.0.0.1/32|0.0.0.0/0|" /etc/postgresql/10/main/pg_hba.conf
-sudo -u postgres sed -i "s|::1/128|::/0|" /etc/postgresql/10/main/pg_hba.conf
-service postgresql restart
-
-# replace this in airflow.cfg change SequentialExecutor to LocalExecutor
-# replace this in airflow.cfg $sql_alchemy_conn=postgresql+psycopg2://<user>:<pwd>@localhost:5432/<database_name>
+cd $AIRFLOW_HOME
+virtualenv -p `which python3` venv
+source venv/bin/activate
 
 pip install boto3
 
-#must do these in virtualenv otherwise it won't work
-airflow initdb
-airflow webserver -p 8080
-#airflow scheduler
+cd env/
+export HOME=`pwd`
+export AIRFLOW_HOME=`pwd`/airflow
+cd $AIRFLOW_HOME
+
+#must run airflow in virtualenv otherwise it won't work. can interact
+#without virtualenv but not recommended. log out and log back in
+#to ssh to the instance.
+
+airflow initdb #this doesn't need to be in virtualenv
+
+#cannot do the below command unless airflow creates these files.
+#$cd $AIRFLOW_HOME
+# replace executor in airflow.cfg : change SequentialExecutor to LocalExecutor
+# replace sql_alchemy_conn in airflow.cfg $sql_alchemy_conn=postgresql+psycopg2://<user>:<pwd>@localhost:5432/<database_name>
+
+
+airflow webserver -p 8080 #run this in its own terminal, preferably in virtualenv
+#otherwise it eats up resources
+# in its own terminal, run $airflow scheduler, also from a virtualenv
 
 echo ""
 echo ""

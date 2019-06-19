@@ -9,7 +9,7 @@ echo "First, a few commands to set up your environment"
 echo ""
 echo ""
 sudo apt update
-sudo apt install apt-transport-https ca-certificates curl software-properties-common awscli
+sudo apt install apt-transport-https ca-certificates curl software-properties-common awscli emacs25 bash
 sudo apt install build-essential
 sudo apt install cmdtest #yarn
 ufw allow 3000
@@ -47,11 +47,17 @@ docker pull vault:latest #get the latest vault image
 docker pull bash:latest #get the latest bash image
 
 apt install docker-compose
+
+
 echo ""
 echo ""
 echo "Cool, now we'll check if you have Node installed"
 echo ""
 echo ""
+
+export HOME=`pwd`
+export NVM_DIR=`pwd`/.nvm/
+sudo passwd
 
 node_installed=`which node`
 if [ $node_installed ]
@@ -83,6 +89,6 @@ else
 echo "Now that your environment is set up, we're going to clone a GitHub repository"
 echo ""
 echo ""
-git clone https://github.com/evonnec/intel-data-mgmt-for-rt-models
+git clone https://github.com/evonnec/intel-data-mgmt-for-rt-models.git
 echo ""
 echo ""
