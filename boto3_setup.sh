@@ -5,7 +5,7 @@ echo "Hey there! This script will setup boto3 for intel-data-mgmt-for-rt-models.
 echo ""
 echo ""
 
-pip install boto3
+pip3 install boto3
 
 #~/.aws/credentials
 #[default]
@@ -34,3 +34,7 @@ pip install -e .
 echo ""
 echo ""
 echo ""
+
+pip3 install matplotlib
+pip3 install scikit-learn
+pip3 install sklearn

@@ -8,12 +8,15 @@ echo ""
 echo "First, a few commands to set up your environment"
 echo ""
 echo ""
-sudo apt update
+sudo apt update -y
 sudo apt install apt-transport-https ca-certificates curl software-properties-common awscli emacs25 bash
 sudo apt install build-essential
 sudo apt install cmdtest #yarn
-ufw allow 3000
-ufw allow 5000
+sudo ufw allow 3000
+sudo ufw allow 5000
+sudo ufw allow 8080
+sudo ufw allow 5432
+
 echo ""
 echo ""
 
@@ -32,6 +35,7 @@ else
   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
   #sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   sudo apt update
+  sudo apt upgrade
   apt-cache policy docker-ce
   sudo apt install docker-ce docker-ce-cli containerd.io
 fi
@@ -51,29 +55,10 @@ apt install docker-compose
 
 echo ""
 echo ""
-echo "Cool, now we'll check if you have Node installed"
 echo ""
 echo ""
 
-export HOME=`pwd`
-export NVM_DIR=`pwd`/.nvm/
 sudo passwd
-
-node_installed=`which node`
-if [ $node_installed ]
-then
-  echo "Great! You already have Node."
-else
-  echo "Ah, seems like Node is missing. Let's install it now!"
-  cd ~
-  curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh -o install_nvm.sh
-fi
-bash install_nvm.sh
-source ~/.profile
-nvm install 10.12
-nvm use 10.12
-npm i -g yarn
-echo "Great! Now you have `node -v` installed"
 
 postgres_installed=`which psql`
 if [ $postgres_installed ]
@@ -84,7 +69,28 @@ else
   cd ~
   sudo apt install postgresql postgresql-contrib
   sudo apt install python3-pip
-  #emacs .pgpass
+
+  echo "CREATE USER <user> PASSWORD '<db_pwd>'; CREATE DATABASE <db name>; GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO <user>;" | sudo -u postgres psql
+  #.pgpass set up is host:port:database_name:user:password
+  sed -i 's//*:5432:<database_name>:<user>:<pwd>/g' .pgpass
+  chmod 600 .pgpass
+  #change the config files
+  sudo -u postgres sed -i "s|#listen_addresses = 'localhost'|listen_addresses = '*'|" /etc/postgresql/10/main/postgresql.conf
+  sudo -u postgres sed -i "s|127.0.0.1/32|0.0.0.0/0|" /etc/postgresql/10/main/pg_hba.conf
+  sudo -u postgres sed -i "s|::1/128|::/0|" /etc/postgresql/10/main/pg_hba.conf
+  sudo -u postgres sed -i "s|    peer|    md5|g" /etc/postgresql/10/main/pg_hba.conf
+  #restart postgresql
+  service postgresql restart
+  sudo -u postgres psql
+  #in postgres now
+  #postgres=#
+  \du
+  \password postgres
+  \q
+  sudo service postgresql reload
+  sudo -u postgres psql
+  \q
+
 
 echo "Now that your environment is set up, we're going to clone a GitHub repository"
 echo ""

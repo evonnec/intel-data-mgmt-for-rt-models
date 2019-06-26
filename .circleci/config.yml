@@ -1,8 +1,10 @@
 version: 2
 jobs:
-  build:
+
+  build1:
     docker:
       - image: debian:stretch
+
 
     steps:
       - checkout
@@ -13,4 +15,34 @@ jobs:
 
       - run:
           name: Print the Current Time
+          command: date
+  build2:
+    docker:
+     - image: circleci:postgres:10.8
+
+    steps:
+      - checkout
+
+      - run:
+          name: Run PostgresSQL tests
+          command: date
+
+  build3:
+    docker:
+      - image: circleci:apache/airflow:latest-3.5-ci
+    steps:
+      - checkout
+
+      - run:
+          name: Run Airflow tests
+          command: date
+
+  build4:
+    docker:
+      - image: circleci:python:3.6.8-slim
+    steps:
+      - checkout
+
+      - run:
+          name: Run python3 tests
           command: date

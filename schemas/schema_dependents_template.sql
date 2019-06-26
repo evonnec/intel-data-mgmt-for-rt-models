@@ -1,1 +1,1 @@
-CREATE TABLE raw_all_trades_dependents (date_time timestamp NOT NULL, trade_price_open numeric NOT NULL, trade_price_close numeric NOT NULL, volume numeric NOT NULL, symbol text NOT NULL, predictor text, industry text);
+CREATE TABLE raw_all_trades_dependents (date_time timestamp without time zone NOT NULL, trade_price_open numeric NOT NULL, trade_price_close numeric NOT NULL, volume numeric NOT NULL, symbol text NOT NULL, predictor text, industry text, PRIMARY KEY (date_time, symbol));

@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "--------------------------------------------"
 
-echo "Hey there! This script will run your postgres for intel-data-mgmt-for-rt-models."
+echo "Hey there! This script will run your postgres for intel-data-mgmt-for-rt-models in a container."
 echo ""
 echo ""
 

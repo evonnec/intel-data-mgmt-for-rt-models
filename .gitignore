@@ -111,12 +111,15 @@ venv.bak/
 
 # aws
 .aws/
-
+<<<<<<< HEAD
+=======
+x`
 # circle ci
-#.circleci/
+.circleci/
 
 # git
-#.git/
+.git/
 
 # DS_Store
-#.DS_Store/
+.DS_Store/
+>>>>>>> origin
