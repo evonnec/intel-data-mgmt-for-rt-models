@@ -10,8 +10,8 @@ from datetime import datetime, timedelta
 default_args = {
     'owner': 'ubuntu',
     'depends_on_past': False,
-    'start_date': datetime(2019, 6, 12),
-    'email': ['evonne.cho@gmail.com'],
+    'start_date': datetime.utcnow(),
+    'email': ['evo@intelligent-data-modeling.com'],
     'email_on_failure': True,
     'email_on_retry': True,
     'retries': 3,

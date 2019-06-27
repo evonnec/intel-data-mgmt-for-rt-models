@@ -72,13 +72,26 @@ cd $AIRFLOW_HOME
 sed -i 's/executor = SequentialExecutor/executor = LocalExecutor/g' airflow.cfg
 #replace
 sed -i 's|sql_alchemy_conn = sqlite:////home/ubuntu/airflow/airflow.db|sql_alchemy_conn = postgresql+psycopg2://<user>:<password>@localhost:5432/<database_table>|g' airflow.cfg
-
+sed -i 's/load_examples = True/load_examples = False/g' airflow.cfg
 #ignore comments below unless you want to know what it is doing.
 #cannot do the below command unless airflow creates these files.
 #$cd $AIRFLOW_HOME
 # replace executor in airflow.cfg : change SequentialExecutor to LocalExecutor
 # replace sql_alchemy_conn in airflow.cfg $sql_alchemy_conn=postgresql+psycopg2://<user>:<pwd>@localhost:5432/<database_name>
 
+
+mkdir ~/airflow/dags/
+cp -R intel-data-mgmt-for-rt-models/DAGs/ airflow/dags/
+
+#logging
+sed -i 's/remote_logging = False/remote_logging = True/g' airflow.cfg
+sed -i 's/remote_log_conn_id =/remote_log_conn_id=something/g' airflow.cfg
+sed -i 's|remote_base_log_folder =|remote_base_log_folder = s3://logs-of-intel-data-model-airflow|g' airflow.cfg
+sed -i 's|encrypt_s3_logs = False|encrypt_s3_logs = True|g' airflow.cfg
+#time zone
+sed -i 's|default_timezone = utc|default_timezone = American/New_York|g' airflow.cfg
+#how powerful
+sed -i 's|max_threads = 2|max_threads = 4|g' airflow.cfg
 echo ""
 echo ""
 echo ""

@@ -71,6 +71,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+.ipynb
 
 # pyenv
 .python-version
@@ -111,15 +112,14 @@ venv.bak/
 
 # aws
 .aws/
-<<<<<<< HEAD
-=======
-x`
+
 # circle ci
-.circleci/
+#.circleci/
 
 # git
 .git/
 
 # DS_Store
 .DS_Store/
->>>>>>> origin
+
+data/
