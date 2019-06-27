@@ -71,7 +71,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-.ipynb
+*.ipynb
 
 # pyenv
 .python-version
@@ -122,4 +122,4 @@ venv.bak/
 # DS_Store
 .DS_Store/
 
-data/
+.data/
