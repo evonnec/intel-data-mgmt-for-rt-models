@@ -8,7 +8,7 @@ class Postgres(object):
         if cls._instance is None:
             cls._instance = object.__new__(cls)
             # normally the db_credenials would be fetched from a config file or the enviroment
-            # meaning shouldn't be hardcoded as follow
+            # meaning shouldn't be hardcoded as follows
             db_config = {'dbname': 'postgres', 'host': 'localhost',
                      'password': 'postgres', 'port': 5432, 'user': 'postgres'}
             try:

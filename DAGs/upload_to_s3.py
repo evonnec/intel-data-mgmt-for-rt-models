@@ -1,16 +1,17 @@
 from airflow import DAG
-from airflow.operators import DummyOperator, PythonOperator
+from airflow.operators import BashOperator, PythonOperator
 
 default_args = {
     'owner': 'ubuntu',
-    'start_date': datetime.utcnow(),
+    'start_date': datetime.now(),
     'retry_delay': timedelta(minutes=5)
 }
 # Using the context manager allows you not to duplicate the dag parameter in each operator
 with DAG('S3_dag_test', default_args=default_args, schedule_interval='@once') as dag:
 
-    start_task = DummyOperator(
-            task_id='dummy_start'
+    start_task = BashOperator(
+            task_id='sync contents to bucket'
+            bash_command='aws s3 sync . s3://${BUCKET_NAME} '
     )
 
     upload_to_S3_task = PythonOperator(

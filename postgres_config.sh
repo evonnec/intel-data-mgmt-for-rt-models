@@ -1,10 +1,56 @@
 #!/bin/bash
 
+#setup.sh sets up most of your postgres. now to load the tables with data
 #set up Postgres tables and config files for intel-data-mgmt-for-rt-Models
-#do this if you haven't set up a postgres table yet, otherwise ignore this section
-echo "CREATE USER <user> PASSWORD '<db_pwd>'; CREATE DATABASE <db name>; GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO <user>;" | sudo -u postgres psql
-echo "CREATE USER airflow PASSWORD '<db_pwd>'; CREATE DATABASE <db name>; GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO airflow;" | sudo -u postgres psql
-sudo -u postgres sed -i "s|#listen_addresses = 'localhost'|listen_addresses = '*'|" /etc/postgresql/10/main/postgresql.conf
-sudo -u postgres sed -i "s|127.0.0.1/32|0.0.0.0/0|" /etc/postgresql/10/main/pg_hba.conf
-sudo -u postgres sed -i "s|::1/128|::/0|" /etc/postgresql/10/main/pg_hba.conf
-service postgresql restart
+
+#this is poor security practice, use hashicorp vault
+aws configure
+echo ""
+echo ""
+#take a look at s3 buckets and bring data from S3 to local
+echo "--------------------------------------------"
+echo ""
+echo ""
+echo "bring over data to local from S3 bucket"
+aws s3 ls
+aws s3 sync s3://{BUCKET_NAME} .
+
+echo ""
+echo ""
+echo "--------------------------------------------"
+echo ""
+echo ""
+echo "Load schemas of tables"
+#load schemas of tables
+psql -f schemas/schema_pred_template.sql -p ${POSTGRES_PORT} -U ${POSTGRES_USER} ${DB_NAME}
+psql -f schemas/schema_dependents_template.sql -p ${POSTGRES_PORT} -U ${POSTGRES_USER} ${DB_NAME}
+psql -f schemas/schema_curr_mapping.sql -p ${POSTGRES_PORT} -U ${POSTGRES_USER} ${DB_NAME}
+psql -f schemas/schema_model_template.sql -p ${POSTGRES_PORT} -U ${POSTGRES_USER} ${DB_NAME}
+psql -f schemas/schema_versioning_template.sql -p ${POSTGRES_PORT} -U ${POSTGRES_USER} ${DB_NAME}
+psql -f schemas/schema_raw_data_template.sql -p ${POSTGRES_PORT} -U ${POSTGRES_USER} ${DB_NAME}
+
+echo ""
+echo ""
+echo "--------------------------------------------"
+echo ""
+echo ""
+echo "import data from S3 as csv into tables just created"
+#import data as csv into tables just created
+psql -p ${POSTGRES_PORT} -d ${DB_NAME} -U ${POSTGRES_USER} -c 'COPY public.raw_all_trades_dependents FROM STDIN with (format csv, header true, delimiter ",");' < dependents/data_formatted_master.csv
+psql -p ${POSTGRES_PORT} -d ${DB_NAME} -U ${POSTGRES_USER} -c 'COPY public.raw_all_trades_predictors FROM STDIN with (format csv, header true, delimiter ",");' < predictors/predictors_master.csv
+
+echo ""
+echo ""
+echo "--------------------------------------------"
+echo ""
+echo ""
+echo "insert some pertinent predictor mapping into tables"
+#insert some pertinent predictor mapping information into TABLES
+psql -f schemas/predictor_insertions.sql -p ${POSTGRES_PORT} -U ${POSTGRES_USER} ${DB_NAME}
+
+echo ""
+echo ""
+echo "--------------------------------------------"
+echo ""
+echo ""
+echo "now it's time to choose your airflow as local or in a docker container"
