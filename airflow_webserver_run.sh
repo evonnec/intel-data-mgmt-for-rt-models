@@ -1,6 +1,7 @@
 #!/bin/bash
 
+source env/bin/activate
 airflow webserver -p 8080
-
-#run this in its own terminal, preferably in virtualenv
+sleep 10
+#run this in its own terminal, in virtualenv
 #otherwise it eats up resources

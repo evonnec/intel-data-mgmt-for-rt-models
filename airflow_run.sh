@@ -38,7 +38,7 @@ deactivate
 cd $HOME
 
 sudo usermod -aG sudo ubuntu
-pip install apache-airflow[postgres,async,statsd,s3,kubernetes,ssh,python3]
+pip install apache-airflow[postgres,async,statsd,s3,ssh,python3]
 #don't use [all] as it doesn't work
 #alternative is pipenv install apache-airflow[list_of_packages]
 
@@ -58,41 +58,57 @@ pip3 install psycopg2
 
 cd env/
 export HOME=`pwd`
-export AIRFLOW_HOME=`pwd`/airflow
+export AIRFLOW_HOME=$HOME/airflow
 cd $AIRFLOW_HOME
 
-#must run airflow in virtualenv otherwise it won't work long term. can interact
-#without virtualenv but not recommended. log out and log back in.
-#to ssh to the instance.
+#must run airflow in virtualenv otherwise it won't work long term.
+#can interact without virtualenv occasionally but not recommended.
+#log out and log back in #to ssh to the instance.
 
-airflow initdb #this doesn't need to be in virtualenv
+airflow initdb
+sleep 10
+airflow upgradedb
+sleep 5
 
-#now your airflow.cfg is created
+#now your airflow.cfg is created after airflow initdb is done successfully
 cd $AIRFLOW_HOME
 sed -i 's/executor = SequentialExecutor/executor = LocalExecutor/g' airflow.cfg
-#replace
-sed -i 's|sql_alchemy_conn = sqlite:////home/ubuntu/airflow/airflow.db|sql_alchemy_conn = postgresql+psycopg2://<user>:<password>@localhost:5432/<database_table>|g' airflow.cfg
-sed -i 's/load_examples = True/load_examples = False/g' airflow.cfg
-#ignore comments below unless you want to know what it is doing.
-#cannot do the below command unless airflow creates these files.
-#$cd $AIRFLOW_HOME
+#uses vars in env_vars.sh
+sed -i 's|sql_alchemy_conn = sqlite:////home/ubuntu/airflow/airflow.db|sql_alchemy_conn = postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PWD}@localhost:${POSTGRES_PORT}/${DB_NAME}|g' airflow.cfg
+#cannot do the command to adjust .cfg unless airflow creates these files after airflow initdb.
 # replace executor in airflow.cfg : change SequentialExecutor to LocalExecutor
 # replace sql_alchemy_conn in airflow.cfg $sql_alchemy_conn=postgresql+psycopg2://<user>:<pwd>@localhost:5432/<database_name>
 
+sed -i 's/dags_are_paused_at_creation = True/dags_are_paused_at_creation = False/g' airflow.cfg
+#otherwise new dags are not run when loaded
+sed -i 's/load_examples = True/load_examples = False/g' airflow.cfg
+#this is up to the user whether they want to see the examples or not
+#airflow default examples live in $HOME/env/lib/python3.6/site-packages/airflow/example_dags/
+#use the bash command $find / -name example_bash_operatory.py
 
+#be sure to $mkdir dags in $AIRFLOW_HOME
 mkdir ~/airflow/dags/
-cp -R intel-data-mgmt-for-rt-models/DAGs/ airflow/dags/
+#change below to whatever github you'd like to pull dags from
+#creates dags directory in $AIRFLOW_HOME - if there's no github to pull from
+#you'll need to make your own dags from scratch
+cp -R intel-data-mgmt-for-rt-models/dags/ airflow/
 
 #logging
 sed -i 's/remote_logging = False/remote_logging = True/g' airflow.cfg
 sed -i 's/remote_log_conn_id =/remote_log_conn_id=something/g' airflow.cfg
-sed -i 's|remote_base_log_folder =|remote_base_log_folder = s3://logs-of-intel-data-model-airflow|g' airflow.cfg
+sed -i 's|remote_base_log_folder =|remote_base_log_folder = s3://${BUCKET_NAME}|g' airflow.cfg
 sed -i 's|encrypt_s3_logs = False|encrypt_s3_logs = True|g' airflow.cfg
-#time zone
+
+#set time zone here (hardcoded, may want to adjust to take in a variable)
 sed -i 's|default_timezone = utc|default_timezone = American/New_York|g' airflow.cfg
 #how powerful
 sed -i 's|max_threads = 2|max_threads = 4|g' airflow.cfg
 echo ""
 echo ""
 echo ""
-echo "We're done with setting up Airflow!"
+echo "We're done with setting up Airflow! Now let's run the webserver and the scheduler"
+echo ""
+echo ""
+echo ""
+airflow_webserver_run.sh &&
+airflow_scheduler_run.sh &&
