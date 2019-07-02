@@ -122,5 +122,16 @@ venv.bak/
 # DS_Store
 .DS_Store/
 
+#data used
 .data/
 data/
+
+#environmental variables
+env_*
+
+#jupyter notebooks
+jupyter_notebooks/
+.jupyter_notebooks/
+
+#files
+predictor_insertions.sql
