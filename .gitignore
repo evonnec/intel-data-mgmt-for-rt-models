@@ -132,3 +132,6 @@ env_*
 #jupyter notebooks
 jupyter_notebooks/
 .jupyter_notebooks/
+
+#files
+predictor_insertions.sql
