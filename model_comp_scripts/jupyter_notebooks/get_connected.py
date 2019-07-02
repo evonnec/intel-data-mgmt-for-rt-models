@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[32]:
+# In[1]:
 
 
 #function definition: this calls the sql connection
@@ -17,18 +17,7 @@ from sqlalchemy.ext.declarative import declarative_base
 # In[3]:
 
 
-#use env_file
-#user = os.environ['POSTGRES_USERNAME']
-#pwd = os.environ['POSTGRES_PASSWORD']
-#db = os.environ['POSTGRES_DBNAME']
-#host = os.environ['POSTGRES_ADDRESS']
-#port = os.environ['POSTGRES_PORT']
-#engine = create_engine('postgresql://%s:%s@%s:%s/%s' % (user, pwd, host, port, db))
-
-
-# In[60]:
-
-
+#retrieves postgres config
 def retrieve_config():
     filepath = 'postgres_config.csv' #sys.argv[0]
 
@@ -47,22 +36,24 @@ def retrieve_config():
                 config_dict.update({var_name: var_value})
     postgres_config_file.close()
 
-    print(config_dict)
+    #print(config_dict)
     return config_dict
 
 
-# In[77]:
+# In[4]:
 
 
+#connects to sql alchemy with engine
 def sqlalch_conn(dict_config):
-    filepath = 'postgres_config.csv' #sys.argv[0]
+    filepath = 'postgres_config.csv' #to-do:sys.argv[0]
 
     if not os.path.isfile(filepath):
         print("File path {} does not exist. Exiting...".format(filepath))
         sys.exit()
     
-    config_dict = {}
+    config_dict = {} #make the contents of the config file a dictionary
     
+    #load the dict with the config stored in csv
     with open(filepath, newline='\n', mode='r') as postgres_config_file:
         config_reader = csv.reader(postgres_config_file, delimiter=',')
         for row in config_reader:
@@ -72,39 +63,41 @@ def sqlalch_conn(dict_config):
                 config_dict.update({var_name: var_value})
     postgres_config_file.close()
     
-    sqlalch_output = 'sqlalch_output.csv'
+    sqlalch_output = 'sqlalch_output.csv' #to-do:sys.argv[1]
+    
     retrieve_config()
+    
     postgres_str = ('postgresql://{username}:{password}@{ipaddress}:{port}/{dbname}'
                 .format(username=config_dict.get('POSTGRES_USERNAME'),
                         password=config_dict.get('POSTGRES_PASSWORD'),
                         ipaddress=config_dict.get('POSTGRES_ADDRESS'),
                         port=config_dict.get('POSTGRES_PORT'),
                         dbname=config_dict.get('POSTGRES_DBNAME')))
-    print(postgres_str)
+    #print(postgres_str)
     
+    #to check what the output was
     with open (sqlalch_output, mode='w') as sqlalch_conn_file:
         sqlalch_output = csv.writer(sqlalch_conn_file)
         sqlalch_conn_file.write(postgres_str)
     sqlalch_conn_file.close()
 
     #create connection to db
-
     cnx = create_engine(postgres_str)
     return cnx
-    #cnx.close
 
 
-# In[78]:
+# In[6]:
 
 
-sqlalch_conn(config_dict)
+#sqlalch_conn(retrieve_config)
 
 
-# In[79]:
+# In[7]:
 
 
+#same notes as sqlalch_ def above. to-do:delete repeat config dict and configure it as its own def
 def psycopg2_conn(dict_config):
-    filepath = 'postgres_config.csv' #sys.argv[0]
+    filepath = 'postgres_config.csv' #to-do:sys.argv[0]
 
     if not os.path.isfile(filepath):
         print("File path {} does not exist. Exiting...".format(filepath))
@@ -120,7 +113,7 @@ def psycopg2_conn(dict_config):
             if var_name not in config_dict:
                 config_dict.update({var_name: var_value})
     postgres_config_file.close()
-    psycopg2_output = 'psycopg2_output.csv'
+    psycopg2_output = 'psycopg2_output.csv' #to-do:sys.argv[1]
     
     psycopg2_str = ("dbname='{dbname}' user='{username}' host='{ipaddress}' password='{password}'"
                 .format(username=config_dict.get('POSTGRES_USERNAME'),
@@ -128,7 +121,7 @@ def psycopg2_conn(dict_config):
                         ipaddress=config_dict.get('POSTGRES_ADDRESS'),
                         port=config_dict.get('POSTGRES_PORT'),
                         dbname=config_dict.get('POSTGRES_DBNAME')))
-    print(psycopg2_str)
+    #print(psycopg2_str)
         
     with open (psycopg2_output, mode='w') as psycopg2_conn_file:
         psycopg2_output = csv.writer(psycopg2_conn_file)
@@ -140,48 +133,20 @@ def psycopg2_conn(dict_config):
     return conn
 
 
-# In[80]:
+# In[8]:
 
 
-psycopg2_conn(config_dict)
+#psycopg2_conn(retrieve_config)
 
 
-# In[277]:
+# In[2]:
 
 
-#def main():
-#    config_dict()
-#    sqlalch_conn(config_dict())
-#    psycopg2_conn(config_dict())
-    
-
-
-# In[259]:
-
-
-#if __name__ == '__main__':
-#    #dict_config()
-#    #sqlalch_conn(dict_config())
-#    #psycopg2_conn(dict_config())
-#    main()
-
-
-# In[280]:
-
-
-#if __name__ == '__psycopg2_conn__':
-#    psycopg2_conn(dict_config())
-
-
-# In[5]:
-
-
-#if __name__ == '__sqlalch_conn__':
-#    sqlalch_conn(dict_config())
-
-
-# In[ ]:
-
-
-
+#to-do CR: use env_file 
+#user = os.environ['POSTGRES_USERNAME']
+#pwd = os.environ['POSTGRES_PASSWORD']
+#db = os.environ['POSTGRES_DBNAME']
+#host = os.environ['POSTGRES_ADDRESS']
+#port = os.environ['POSTGRES_PORT']
+#engine = create_engine('postgresql://%s:%s@%s:%s/%s' % (user, pwd, host, port, db))
 
