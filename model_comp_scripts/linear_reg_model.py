@@ -1,8 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
-
-# In[144]:
-
 
 #import psycopg2
 #import boto3
@@ -18,9 +14,6 @@ import csv
 import matplotlib.pyplot as plt
 import get_connected as gc
 import versioning as ver
-
-
-# In[166]:
 
 
 dep_table_readin = 'dependents_list.csv' #sys.argv[0]
@@ -39,14 +32,8 @@ with open(dep_table_readin, newline='\n', mode='r') as dep_table_file:
 dep_table_file.close()
 
 
-# In[167]:
-
-
 #omit the index and use only the list of symbols
 dep_table_list = dep_table_list[1:]
-
-
-# In[159]:
 
 
 def use_gc_config():
@@ -58,25 +45,13 @@ def use_gc_psy():
 def use_ver():
     return ver.retrieve_version()
 
-
-# In[160]:
-
-
 conn = use_gc()
 conn
 version = use_ver()
 version
 
-
-# In[161]:
-
-
 #version_start_datetime = datetime.strptime(version[0], "%Y-%m-%d %H:%M:%S")
 #version_end_datetime = datetime.strptime(version[1], "%Y-%m-%d %H:%M:%S")
-
-
-# In[164]:
-
 
 for item in dep_table_list:
     #for each depdendent
@@ -127,28 +102,10 @@ for item in dep_table_list:
         #insert model output without version or flag
         conn.execute("""INSERT INTO predictive_model (symbol, predictor, beta) VALUES ('""" + dep_item + """', '""" + pred + """',  """ + beta_str + """)""")
 
-
-# In[165]:
-
-
 conn.dispose()
 
-
-# In[ ]:
-
-
 #lr = LinearRegression() # Initialize the model
-
-
-# In[ ]:
-
-
 #lr.fit(x,y) # Fit the model
-
-
-# In[ ]:
-
-
 #new_x = np.array([7,8,9]).reshape(-1,1)
 #predicted_y = lr.predict(new_x) # Predict for new data
 #print(predicted_y)
