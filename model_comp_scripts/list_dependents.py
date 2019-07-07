@@ -1,8 +1,5 @@
 #!/usr/bin/env python
-# coding: utf-8
-
-# In[73]:
-
+# written by E.Cho
 
 #function definition: this gathers a list of dependents
 import get_connected as gc
@@ -15,130 +12,86 @@ import pandas as pd
 import numpy as np
 
 
-# In[74]:
+# In[37]:
 
 
 def use_gc_config():
-    return gc.retrieve_config()
+    return gc.retrieve_config() #retrieve conn config
 
 
-# In[75]:
+# In[38]:
 
 
 def use_gc():
-    return gc.sqlalch_conn(use_gc_config)
+    return gc.sqlalch_conn(use_gc_config) #call sqlalch conn
 
 
-# In[76]:
+# In[39]:
 
 
 def use_gc_psy():
-    return gc.psycopg2_conn(use_gc_config)
+    return gc.psycopg2_conn(use_gc_config) #call psycopg2 conn
 
 
-# In[77]:
+# In[40]:
 
 
-dep_table_readin = 'dependents_table_name.csv' #sys.argv[1]
-output_file = 'dependents_list.csv' #sys.argv[2]
-sql_readin = 'sqlalch_output.csv' #use_gc
-psycopg2_readin = 'psycopg2_output.csv' #use_gc_psy
-    
+dep_table_readin = 'dependents_table_name.csv' #to-do:sys.argv[0]
+output_file = 'dependents_list.csv' #to-do:sys.argv[1]
+
 if not os.path.isfile(dep_table_readin):
     print("File path {} does not exist. Exiting...".format(dep_table_readin))
     sys.exit()
-elif not os.path.isfile(sql_readin):
-    print("File path {} does not exist. Exiting...".format(sql_readin))
-    sys.exit()
-elif not os.path.isfile(psycopg2_readin):
-    print("File path {} does not exist. Exiting...".format(psycopg2_readin))
-    sys.exit()
-    
+
+#looks up the table name of dependents
 with open(dep_table_readin, newline='\n', mode='r') as dep_table_file:
     dep_table = csv.reader(dep_table_file)
     for row in dep_table:
-        dep_table_name = str(row[0])   
+        dep_table_name = str(row[0])
 dep_table_file.close()
-    
-print(dep_table_name)
 
 
-# In[78]:
+# In[41]:
 
 
-with open (sql_readin, newline='\n', mode='r') as read_in_file:
-    postgres_var = csv.reader(read_in_file)
-    for row in postgres_var:
-        postgres_str = str(row[0])
-read_in_file.close()
-
-with open (psycopg2_readin, newline='\n', mode='r') as read_in_file:
-    psycopg2_var = csv.reader(read_in_file)
-    for row in psycopg2_var:
-        psycopg2_str = str(row[0])
-read_in_file.close()
-    
-    #return dep_table_name
-
-
-# In[79]:
+#to-do: delete or use - to ultimately bring in strings as connections
+#with open (sql_readin, newline='\n', mode='r') as read_in_file:
+#    postgres_var = csv.reader(read_in_file)
+#    for row in postgres_var:
+#        postgres_str = str(row[0])
+#read_in_file.close()
+#
+#with open (psycopg2_readin, newline='\n', mode='r') as read_in_file:
+#    psycopg2_var = csv.reader(read_in_file)
+#    for row in psycopg2_var:
+#        psycopg2_str = str(row[0])
+#read_in_file.close()
 
 
-if __name__ == '__dep_main__':
-    #get_connected.conn()
-    dep_main()
+# In[42]:
 
 
-# In[80]:
+#establish connection using function
+conn = use_gc()
 
 
-dep_main
+# In[43]:
 
 
-# In[82]:
+conn
 
 
-cnx = sqlalchemy.create_engine('postgresql://postgres:postgres@127.0.0.1:5432/postgres')
+# In[44]:
 
-dependents = pd.read_sql_query('''select distinct symbol as dep_sym from ''' + dep_table_name + ''' order by symbol asc;''', cnx)
+
+#query list of dependents
+dependents = pd.read_sql_query('''select distinct symbol as dep_sym from ''' + dep_table_name + ''' order by symbol asc;''', conn)
+#write df to csv. to-do: perhaps change this to csv standard library
 dependents.to_csv(output_file)
 
-#print(dependents)
+
+# In[45]:
 
 
-# In[83]:
-
-
-#print(str(use_gc))
-#cnx = create_engine(use_gc)
-#cnx = create_engine(postgres_str)
-
-    #connection_str = psycopg2_str
-    #connector = psycopg2.connect(psycopg2_str)
-    #cursor = connector.cursor()
-
-    #cursor.execute('''select distinct symbol as dep_sym from ''' + dep_table_name + ''' order by symbol asc;''')
-    #connector.commit()
-    #cursor.close()
-    #connector.close()
-
-#dependents = pd.read_sql_query('''select distinct symbol as dep_sym from ''' + dep_table_name + ''' order by symbol asc;''', use_gc)
-    #dependents.drop(dependents.columns[0], axis=1).to_csv(output_file)
-#cnx.close
-#dependents.to_csv(output_file)
-
-    #with open (output_file, mode='w') as dep_list_file:
-    #    output_file = csv.writer(dep_list_file)
-    #    for dependent in dependents:
-    #        line = ",".join([str(e) for e in dependent]) + "\n"
-    #        dep_list_file.write(line)
-    #dep_list_file.close()
-    
-#return dependents
-
-
-# In[ ]:
-
-
-
-
+#close connection (to-do: ? not certain if this is all that is needed)
+conn.dispose()

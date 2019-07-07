@@ -1,3 +1,0 @@
-connection_str = get_connected()
-connector = psycopg2.connect(connection_str)
-cursor = connector.cursor()

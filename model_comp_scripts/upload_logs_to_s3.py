@@ -2,7 +2,7 @@ import logging
 import boto3
 from botocore.exceptions import ClientError
 
-
+# this is a template, see below for source
 def upload_file(file_name, bucket, object_name=None):
     """Upload a file to an S3 bucket
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "--------------------------------------------"
 
-echo "Hey there! This script will set up your AWS EC2 instance for development for intel-data-mgmt-for-rt-models."
+echo "Hey there! This script will set up your AWS EC2 Ubuntu 18.04 instance for development for intel-data-mgmt-for-rt-models."
 echo ""
 echo ""
 
