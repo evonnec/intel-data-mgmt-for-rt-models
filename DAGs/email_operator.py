@@ -28,4 +28,4 @@ send_email = EmailOperator(
     subject='stakeholders test email'
     html_content="BODY OF EMAIL: model failures/successes",
     dag=dag
-)
+) #send emails with logging metrics

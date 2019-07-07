@@ -10,6 +10,9 @@ Some examples:
 - crime data
 - stock data
 
+This takes into account that the system running is ubuntu 18.04. This may not work
+if the system it's run on is not ubuntu 18.04.
+
 1. Edit file env_vars.sh with your variables
 2. Run setup.sh to set up your environment
 3. Run postgres_config.sh to set up your Postgres
@@ -18,4 +21,4 @@ Some examples:
 set it up in a Docker container.
     - if you'd like to use a Docker container, run docker_for_airflow_by_puckel.sh
     - if you'd like to set up airflow natively, run airflow_run.sh
-6. Please leave feedback after usage! 
+6. Please leave feedback after usage!

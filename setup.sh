@@ -21,7 +21,8 @@ echo "--------------------------------------------"
 echo ""
 echo ""
 echo "Run the file to export your environment variables"
-env_vars.sh
+chmod +x ./intel-data-mgmt-for-rt-models/env_vars.sh
+./intel-data-mgmt-for-rt-models/env_vars.sh
 echo ""
 echo ""
 
@@ -37,7 +38,7 @@ docker_installed=`which docker`
 
 if [ $docker_installed ]
 then
-  echo "Great! You already have Docker. But! If it is old, run this and try again: $sudo apt-get remove docker docker-engine docker.io containerd runc "
+  echo "Great! You already have Docker. But! If it is old, run this and try again: $sudo apt remove docker docker-engine docker.io containerd runc "
   echo ""
 else
   echo "Ah, seems like Docker is missing. Let's install it now!"
@@ -78,10 +79,10 @@ echo "--------------------------------------------"
 echo ""
 echo ""
 
-echo "Before your environment is set up, we're going to clone a GitHub repository"
+#echo "Before your environment is set up, we're going to clone a GitHub repository"
 echo ""
 echo ""
-git clone https://github.com/evonnec/intel-data-mgmt-for-rt-models.git
+#git clone https://github.com/evonnec/intel-data-mgmt-for-rt-models.git
 echo ""
 echo ""
 
@@ -105,9 +106,10 @@ else
   echo "CREATE USER airflow PASSWORD 'airflow'; GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO airflow;" | sudo -u postgres psql
 
   #.pgpass set up is host:port:database_name:user:password
-  sed -i 's//*:5432:${DB_NAME}:${POSTGRES_USER}:${POSTGRES_PWD}/g' .pgpass
+  touch ~/.pgpass
   chmod 600 .pgpass #give permissions
-
+  sed -i 's//*:5432:${DB_NAME}:${POSTGRES_USER}:${POSTGRES_PWD}/g' .pgpass
+  
   #change the config files
   sudo -u postgres sed -i "s|#listen_addresses = 'localhost'|listen_addresses = '*'|" /etc/postgresql/10/main/postgresql.conf
   sudo -u postgres sed -i "s|127.0.0.1/32|0.0.0.0/0|" /etc/postgresql/10/main/pg_hba.conf
@@ -126,19 +128,34 @@ else
   sudo service postgresql reload
   sudo -u postgres psql
   \q
+fi
 
-  echo ""
-  echo ""
-  echo "--------------------------------------------"
+echo ""
+echo ""
+echo "--------------------------------------------"
 
-  echo "let's run boto3_setup.sh"
-  boto3_setup.sh
+echo ""
+echo ""
+echo "We're done with setup. Move next to postgres_config.sh to set up tables and schemas"
+chmod +x ./intel-data-mgmt-for-rt-models/postgres.sh
+./intel-data-mgmt-for-rt-models/postgres.sh
 
-  echo ""
-  echo ""
-  echo "--------------------------------------------"
-  echo ""
-  echo ""
-  echo "We're done with setup. Move next to postgres_config.sh to set up tables and schemas"
-  echo ""
-  echo ""
+echo ""
+echo ""
+echo "--------------------------------------------"
+
+echo ""
+echo ""
+chmod +x ./intel-data-mgmt-for-rt-models/airflow_run.sh
+chmod +x ./intel-data-mgmt-for-rt-models/airflow_scheduler_run.sh
+chmod +x ./intel-data-mgmt-for-rt-models/airflow_webserver_run.sh
+chmod +x ./intel-data-mgmt-for-rt-models/docker_for_airflow_by_puckel.sh
+chmod +x ./intel-data-mgmt-for-rt-models/docker_for_postgres_run.sh
+
+echo "let's run boto3_setup.sh"
+chmod +x ./intel-data-mgmt-for-rt-models/boto3_setup.sh
+./intel-data-mgmt-for-rt-models/boto3_setup.sh
+
+echo ""
+echo ""
+echo "--------------------------------------------"

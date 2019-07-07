@@ -13,7 +13,7 @@ echo ""
 echo ""
 echo "bring over data to local from S3 bucket"
 aws s3 ls
-aws s3 sync s3://{BUCKET_NAME} .
+aws s3 sync s3://{IMPORT_BUCKET_NAME} .
 
 echo ""
 echo ""
@@ -47,7 +47,7 @@ echo ""
 echo "insert some pertinent predictor mapping into tables"
 #insert some pertinent predictor mapping information into TABLES
 psql -f schemas/predictor_insertions.sql -p ${POSTGRES_PORT} -U ${POSTGRES_USER} ${DB_NAME}
-psql -U postres
+psql -U postgres
 INSERT into raw_future_curr_mapping (symbol, currency) VALUES ('ESM9 Index', 'USD'), ('Z M9 Index', 'GBPUSD Curncy'), ('GXM9 Index', 'EURUSD Curncy'), ('VGM9 Index', 'EURUSD Curncy'), ('NHM9 Index', 'USDJPY Curncy'), ('SMM9 Index', 'USDCHF Curncy');
 echo ""
 echo ""

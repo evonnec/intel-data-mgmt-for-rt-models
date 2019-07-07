@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[44]:
+# In[1]:
 
 
 #import psycopg2
@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import get_connected as gc
 
 
-# In[45]:
+# In[2]:
 
 
 def use_gc_config():
@@ -30,47 +30,14 @@ def use_gc_psy():
     return gc.psycopg2_conn(use_gc_config)
 
 
-# In[46]:
+# In[3]:
 
 
 conn = use_gc()
 conn
 
 
-# In[54]:
-
-
-def retrieve_prev_version():
-    filepath_prev = 'version_previous.csv' #sys.argv[0]
-
-    if not os.path.isfile(filepath):
-        print("File path {} does not exist. Exiting...".format(filepath))
-        sys.exit()
-    
-    prev_version = []
-    
-    with open(filepath_prev, newline='\n', mode='r') as prev_version_input_file:
-        prev_version_input_reader = csv.reader(prev_version_input_file, delimiter=',')
-        for row in prev_version_input_reader:
-            prev_ver_date_start = str(row[0])
-            prev_ver_date_end = str(row[1])
-            prev_ver_number = str(row[2])
-            prev_version.append(prev_ver_date_start)
-            prev_version.append(prev_ver_date_end)
-            prev_version.append(prev_ver_number)
-    prev_version_input_file.close()
-
-    #print(config_dict)
-    return prev_version
-
-
-# In[55]:
-
-
-retrieve_prev_version()
-
-
-# In[48]:
+# In[35]:
 
 
 def retrieve_version():
@@ -97,7 +64,7 @@ def retrieve_version():
     return version
 
 
-# In[49]:
+# In[36]:
 
 
 version_list = retrieve_version()
