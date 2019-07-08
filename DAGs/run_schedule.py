@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 default_args = {
     'owner': 'ubuntu',
     'depends_on_past': False,
-    'start_date': datetime.now(),
+    'start_date': datetime(2019, 6, 6),
     'email': ['evo@intelligent-data-modeling.com'],
     'email_on_failure': True,
     'email_on_retry': True,
@@ -24,7 +24,7 @@ default_args = {
 
 #CR to-do: abstract away
 dag = DAG(
-    'run_schedule', default_args=default_args, schedule_interval=timedelta(days=1))
+    'run_schedule', default_args=default_args, schedule_interval=timedelta(days=0))
 
 # t1, t2 and t3 are examples of tasks created by instantiating operators
 t1 = BashOperator(

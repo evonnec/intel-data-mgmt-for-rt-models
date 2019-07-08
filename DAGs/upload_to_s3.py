@@ -3,7 +3,7 @@ from airflow.operators import BashOperator, PythonOperator
 
 default_args = {
     'owner': 'ubuntu',
-    'start_date': datetime.now(),
+    'start_date': datetime(2019, 6, 6),
     'retry_delay': timedelta(minutes=5)
 }
 # Using the context manager allows you not to duplicate the dag parameter in each operator

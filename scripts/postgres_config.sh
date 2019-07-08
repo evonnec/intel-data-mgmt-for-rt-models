@@ -49,6 +49,7 @@ echo "insert some pertinent predictor mapping into tables"
 psql -f schemas/predictor_insertions.sql -p ${POSTGRES_PORT} -U ${POSTGRES_USER} ${DB_NAME}
 psql -U postgres
 INSERT into raw_future_curr_mapping (symbol, currency) VALUES ('ESM9 Index', 'USD'), ('Z M9 Index', 'GBPUSD Curncy'), ('GXM9 Index', 'EURUSD Curncy'), ('VGM9 Index', 'EURUSD Curncy'), ('NHM9 Index', 'USDJPY Curncy'), ('SMM9 Index', 'USDCHF Curncy');
+exit
 echo ""
 echo ""
 echo "--------------------------------------------"

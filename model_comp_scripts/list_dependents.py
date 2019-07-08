@@ -10,10 +10,8 @@ import psycopg2
 import pandas as pd
 import numpy as np
 
-
 def use_gc_config():
     return gc.retrieve_config() #retrieve conn config
-
 
 def use_gc():
     return gc.sqlalch_conn(use_gc_config) #call sqlalch conn
@@ -35,19 +33,14 @@ with open(dep_table_readin, newline='\n', mode='r') as dep_table_file:
         dep_table_name = str(row[0])
 dep_table_file.close()
 
-
-
 #establish connection using function
 conn = use_gc()
-
 conn
-
 
 #query list of dependents
 dependents = pd.read_sql_query('''select distinct symbol as dep_sym from ''' + dep_table_name + ''' order by symbol asc;''', conn)
 #write df to csv. to-do: perhaps change this to csv standard library
 dependents.to_csv(output_file)
-
 
 #close connection (to-do: ? not certain if this is all that is needed)
 conn.dispose()
