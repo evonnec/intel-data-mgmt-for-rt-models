@@ -1,13 +1,13 @@
 import airflow
 from airflow import DAG
-from datetime import datetime, timedelta, *
-from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
-from airflow.operators.bash_operator import BashOperator
-from airflow.models import Variable
-import json
+from datetime import datetime, timedelta
+#from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
+#from airflow.operators.bash_operator import BashOperator
+#from airflow.models import Variable
+#import json
 from airflow.operators.email_operator import EmailOperator
-import snakebite.client
-from google.protobuf import descriptor
+#import snakebite.client
+#from google.protobuf import descriptor
 
 default_args = {
     'owner': 'airflow',
@@ -23,9 +23,9 @@ default_args = {
 dag = DAG('EmailOperator-Test', default_args=default_args, catchup=False)
 
 send_email = EmailOperator(
-    task_id='send email',
+    task_id='send_email',
     to='evo@intelligent-data-modeling.com',
-    subject='stakeholders test email'
+    subject='stakeholders test email',
     html_content="BODY OF EMAIL: model failures/successes",
     dag=dag
 ) #send emails with logging metrics
