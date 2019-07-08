@@ -10,8 +10,7 @@ Some examples:
 - crime data
 - stock data
 
-This takes into account that the system running is ubuntu 18.04. This may not work
-if the system it's run on is not ubuntu 18.04.
+This takes into account that the system running is ubuntu 18.04. This won't work for systems not ubuntu 18.04.
 
 1. Edit file env_vars.sh with your variables
 2. Run setup.sh to set up your environment
