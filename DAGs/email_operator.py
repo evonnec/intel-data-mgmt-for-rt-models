@@ -1,13 +1,7 @@
 import airflow
 from airflow import DAG
 from datetime import datetime, timedelta
-#from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
-#from airflow.operators.bash_operator import BashOperator
-#from airflow.models import Variable
-#import json
 from airflow.operators.email_operator import EmailOperator
-#import snakebite.client
-#from google.protobuf import descriptor
 
 default_args = {
     'owner': 'airflow',
